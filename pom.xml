@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.hwei</groupId>
-	<version>0.2.6</version>
+	<version>0.3</version>
 	<artifactId>redstoneclockdetector</artifactId>
 	<name>RedstoneClockDetector</name>
 	<properties>
@@ -10,11 +10,11 @@
 	</properties>
 	<url>http://dev.bukkit.org/server-mods/redstoneclockdetector</url>
 	<repositories>
-	       <repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public</url>
-		</repository>
-	</repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+    </repositories>
 	<build>
 		<finalName>${project.name}</finalName>
 		<plugins>
@@ -23,8 +23,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>11</source>
+					<target>11</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -50,10 +50,11 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.2.4-R1.0</version>
-		</dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
