@@ -33,17 +33,18 @@ public class StartCommand extends AbstractCommand {
 		IOutput toSender = outputManager.toSender(sender);
 		if(user != null) {
 			toSender.output(String.format(
-					ChatColor.GREEN.toString() + "%s " + ChatColor.WHITE +
+					ChatColor.GREEN + "%s " + ChatColor.WHITE +
 					"has already started a scan.", user.getName()));
 			return true;
 		}
 		IOutput toSenderPrefix = outputManager.prefix(outputManager.toSender(sender));
-		this.plugin.start(sender, seconds, new ProgressReporter(toSenderPrefix, new FinishCallback(this.listCommand, sender)));
+		this.plugin.start(sender, seconds, new ProgressReporter(toSenderPrefix,
+																new FinishCallback(this.listCommand, sender)));
 		toSender.output(String.format("Start a scan of %d seconds.", seconds));
 		return true;
 	}
 	
-	protected class ProgressReporter implements RCDPlugin.IProgressReporter {
+	protected static class ProgressReporter implements RCDPlugin.IProgressReporter {
 		public ProgressReporter(IOutput toSender, FinishCallback finishCallback) {
 			this.toSender = toSender;
 			this.finishCallback = finishCallback;
@@ -64,7 +65,7 @@ public class StartCommand extends AbstractCommand {
 		protected FinishCallback finishCallback;
 	}
 	
-	protected class FinishCallback {
+	protected static class FinishCallback {
 		public FinishCallback(AbstractCommand listCommand, CommandSender sender) {
 			this.listCommand = listCommand;
 			this.sender = sender;
@@ -72,7 +73,7 @@ public class StartCommand extends AbstractCommand {
 		public void onFinish() {
 			try {
 				this.listCommand.execute(sender, new String[] {"list"});
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 		}
 		protected AbstractCommand listCommand;

@@ -20,13 +20,13 @@ import me.hwei.bukkit.redstoneClockDetector.util.OutputManager;
 import me.hwei.bukkit.redstoneClockDetector.util.PermissionsException;
 import me.hwei.bukkit.redstoneClockDetector.util.UsageException;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -44,24 +44,9 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 
 	@Override
 	public void onEnable() {
-		IOutput toConsole = new IOutput() {
-			@Override
-			public void output(String message) {
-				getServer().getConsoleSender().sendMessage(message);
-			}
-		};
-		IOutput toAll = new IOutput() {
-			@Override
-			public void output(String message) {
-				getServer().broadcastMessage(message);
-			}
-		};
-		OutputManager.IPlayerGetter playerGetter = new OutputManager.IPlayerGetter() {
-			@Override
-			public Player get(String name) {
-				return getServer().getPlayer(name);
-			}
-		};
+		IOutput toConsole = message -> getServer().getConsoleSender().sendMessage(message);
+		IOutput toAll = message -> getServer().broadcast(Component.text(message));
+		OutputManager.IPlayerGetter playerGetter = name -> getServer().getPlayer(name);
 		String pluginName = this.getDescription().getName();
 		OutputManager.Setup(
 				"[" + ChatColor.YELLOW + pluginName + ChatColor.WHITE + "] ",
@@ -70,8 +55,8 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 		this.toConsole.output("Enabled.");
 		
 	
-		this.redstoneActivityTable = new HashMap<Location, Integer>();
-		this.redstoneActivityList = new ArrayList<Entry<Location, Integer>>();
+		this.redstoneActivityTable = new HashMap<>();
+		this.redstoneActivityList = new ArrayList<>();
 		this.stop();
 		
 		this.setupCommands();
@@ -79,7 +64,7 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 		this.getServer().getPluginManager().registerEvents(this, this);
 	}
 	
-	protected boolean setupCommands() {
+	protected void setupCommands() {
 		try {
 			ListCommand listCommand = new ListCommand(
 					"list [page]  List locations of redstone activities.",
@@ -113,9 +98,7 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 		} catch (Exception e) {
 			this.toConsole.output("Can not setup commands!");
 			e.printStackTrace();
-			return false;
 		}
-		return true;
 	}
 	
 	public List<Entry<Location, Integer>> getRedstoneActivityList() {
@@ -130,7 +113,7 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 		return this.worker.getSecondsRemain();
 	}
 	public interface IProgressReporter {
-		public void onProgress(int secondsRemain);
+		void onProgress(int secondsRemain);
 	}
 	protected class Worker implements Runnable {
 		public Worker(int seconds, IProgressReporter progressReporter) {
@@ -159,13 +142,12 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 		protected IProgressReporter progressReporter;
 		protected int secondsRemain;
 	}
-	public boolean start(CommandSender sender, int seconds, IProgressReporter progressReporter ) {
+	public void start(CommandSender sender, int seconds, IProgressReporter progressReporter ) {
 		if(this.taskId != Integer.MIN_VALUE)
-			return false;
+			return;
 		this.sender = sender;
 		this.worker = new Worker(seconds, progressReporter);
 		this.taskId = this.getServer().getScheduler().scheduleSyncRepeatingTask(this, this.worker, 0L, 20L);
-		return true;
 	}
 	public boolean stop() {
 		if(this.taskId != Integer.MIN_VALUE) {
@@ -182,14 +164,14 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 	
 	protected void sortList() {
 		class ValueComparator implements Comparator<Location> {
-			Map<Location, Integer> base;
+			final Map<Location, Integer> base;
 			public ValueComparator(Map<Location, Integer> base) {
 				this.base = base;
 			}
 			public int compare(Location a, Location b) {
 				if(base.get(a) < base.get(b)) {
 					return 1;
-				} else if(base.get(a) == base.get(b)) {
+				} else if(base.get(a).equals(base.get(b))) {
 					return 0;
 				} else {
 					return -1;
@@ -197,7 +179,7 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 			}
 		}
 		ValueComparator bvc = new ValueComparator(this.redstoneActivityTable);
-		TreeMap<Location, Integer> sortedMap = new TreeMap<Location, Integer>(bvc);
+		TreeMap<Location, Integer> sortedMap = new TreeMap<>(bvc);
 		sortedMap.putAll(this.redstoneActivityTable);
 		this.redstoneActivityList.clear();
 		this.redstoneActivityList.addAll(sortedMap.entrySet());
@@ -225,10 +207,10 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 				topCommand.showUsage(sender, command.getName());
 			}
 		} catch (PermissionsException e) {
-			sender.sendMessage(String.format(ChatColor.RED.toString() + "You do not have permission of %s", e.getPerms()));
+			sender.sendMessage(String.format(ChatColor.RED + "You do not have permission of %s", e.getPerms()));
 		} catch (UsageException e) {
 			sender.sendMessage("Usage: " + ChatColor.YELLOW + command.getName() + " " + e.getUsage());
-			sender.sendMessage(String.format(ChatColor.RED.toString() + e.getMessage()));
+			sender.sendMessage(ChatColor.RED + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -241,7 +223,6 @@ public class RCDPlugin extends JavaPlugin implements CommandExecutor, Listener {
 	protected Worker worker = null;
 	protected CommandSender sender = null;
 	protected int taskId = Integer.MIN_VALUE;
-	protected String prefex = "";
 	protected IOutput toConsole = null;
 	protected AbstractCommand topCommand = null;
 }

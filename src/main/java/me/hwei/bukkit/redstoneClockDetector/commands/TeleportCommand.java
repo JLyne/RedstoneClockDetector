@@ -81,7 +81,7 @@ public class TeleportCommand extends AbstractCommand {
 				toPlayer.output("Teleporting...");
 			else
 				toPlayer.output(String.format(
-						ChatColor.GREEN.toString() + "%s " + ChatColor.WHITE +
+						ChatColor.GREEN + "%s " + ChatColor.WHITE +
 						"is teleporting you...", sender.getName()));
 		}
 		return true;

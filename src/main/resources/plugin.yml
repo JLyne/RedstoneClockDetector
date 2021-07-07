@@ -1,10 +1,12 @@
 name: RedstoneClockDetector
 main: me.hwei.bukkit.redstoneClockDetector.RCDPlugin
-version: 0.3.0
-api-version: '1.15'
+version: @project.version@
+api-version: 1.16
 
 description: Detect redstone clock and teleport to it.
-author: HWei
+authors:
+  - Jim (NotKatuen)
+  - HWei
 commands:
   rcd:
     aliases: redstoneclockdetector

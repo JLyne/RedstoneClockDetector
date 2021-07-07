@@ -3,6 +3,7 @@ package me.hwei.bukkit.redstoneClockDetector.commands;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,10 +63,10 @@ public class BreakCommand extends AbstractCommand {
 			}
 			block.setType(Material.OAK_SIGN);
 			Sign s = (Sign) block.getState();
-			s.setLine(0, sender.getName());
-			s.setLine(1, ChatColor.DARK_RED + "broke a");
-			s.setLine(2, blockName);
-			s.setLine(3, ChatColor.DARK_RED + "here.");
+			s.line(0, Component.text(sender.getName()));
+			s.line(1, Component.text(ChatColor.DARK_RED + "broke a"));
+			s.line(2, Component.text(blockName));
+			s.line(3, Component.text(ChatColor.DARK_RED + "here."));
 			s.update();
 			toSender.output(String.format(
 					"Has Broken %s block at " +

@@ -1,5 +1,7 @@
 package me.hwei.bukkit.redstoneClockDetector.util;
 
+import java.io.Serial;
+
 public class PermissionsException extends Exception {
 
 	public PermissionsException(String perms) {
@@ -10,7 +12,8 @@ public class PermissionsException extends Exception {
 		return perms;
 	}
 
-	private String perms;
+	private final String perms;
 	
+	@Serial
 	private static final long serialVersionUID = 1L;
 }

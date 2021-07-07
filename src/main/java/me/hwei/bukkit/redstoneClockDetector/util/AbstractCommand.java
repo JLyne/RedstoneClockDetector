@@ -17,7 +17,7 @@ public abstract class AbstractCommand {
 	public void showUsage(CommandSender sender, String rootCommand) {
 		if(sender.hasPermission(this.perm)) {
 			IOutput toSender = OutputManager.GetInstance().toSender(sender);
-			toSender.output(ChatColor.YELLOW.toString() + rootCommand + ChatColor.WHITE + " " + this.coloredUsage);
+			toSender.output(ChatColor.YELLOW + rootCommand + ChatColor.WHITE + " " + this.coloredUsage);
 		}
 		for(AbstractCommand child : this.children) {
 			child.showUsage(sender, rootCommand);
@@ -34,13 +34,13 @@ public abstract class AbstractCommand {
 	
 	protected boolean execute(CommandSender sender, String[] args, MatchResult[] matchResults) throws PermissionsException, UsageException {
 		// fill possible optional args with null.
-		List<String> argList = new ArrayList<String>(Arrays.asList(args));
+		List<String> argList = new ArrayList<>(Arrays.asList(args));
 		for(int i=0; i<this.tokens.length-args.length; ++i) {
 			argList.add(null);
 		}
 		
 		// continue to match args.
-		List<MatchResult> matchResultList = new ArrayList<MatchResult>(Arrays.asList(matchResults));
+		List<MatchResult> matchResultList = new ArrayList<>(Arrays.asList(matchResults));
 		for(int i=matchResultList.size(); i<this.tokens.length; ++i) {
 			MatchResult matchResult = this.tokens[i].match(argList.get(i));
 			if(matchResult == null)
@@ -61,7 +61,7 @@ public abstract class AbstractCommand {
 				throw new PermissionsException(this.perm);
 			
 			// get all data from args and execute command.
-			List<MatchResult> dataList = new ArrayList<MatchResult>(args.length);
+			List<MatchResult> dataList = new ArrayList<>(args.length);
 			for(MatchResult matchResult : matchResultList) {
 				if(matchResult.hasData()) {
 					dataList.add(matchResult);
@@ -75,7 +75,7 @@ public abstract class AbstractCommand {
 	
 	private void buildTokens(String usage) throws Exception {
 		int splitPos = usage.indexOf("  ");
-		String tokenDefine = null;
+		String tokenDefine;
 		if(splitPos == -1) {
 			tokenDefine = usage;
 			this.coloredUsage = tokenDefine;
@@ -84,7 +84,7 @@ public abstract class AbstractCommand {
 			this.coloredUsage = tokenDefine + ChatColor.GRAY + usage.substring(splitPos);
 		}
 		String[] tokenStrings = tokenDefine.split(" ");
-		List<Token> tokenList = new ArrayList<Token>(tokenStrings.length);
+		List<Token> tokenList = new ArrayList<>(tokenStrings.length);
 		for(String tokenString : tokenStrings) {
 			if(tokenString.isEmpty())
 				continue;
@@ -139,8 +139,8 @@ public abstract class AbstractCommand {
 				return false;
 			return this.template.equalsIgnoreCase(token.template);
 		}
-		private boolean optional;
-		private String template;
+		private final boolean optional;
+		private final String template;
 	}
 	
 	protected static class MatchResult {
@@ -159,24 +159,15 @@ public abstract class AbstractCommand {
 			Integer result = null;
 			try {
 				result = Integer.parseInt(this.data);
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 			return result;
 		}
-		public Double getDouble() {
-			if(this.data == null)
-				return null;
-			Double result = null;
-			try {
-				result = Double.parseDouble(this.data);
-			} catch (Exception e) {
-			}
-			return result;
-		}
+
 		public String getString() {
 			return this.data;
 		}
-		private String data;
+		private final String data;
 	}
 	
 }

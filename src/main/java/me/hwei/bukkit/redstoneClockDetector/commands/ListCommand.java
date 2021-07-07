@@ -45,13 +45,13 @@ public class ListCommand extends AbstractCommand {
 				pageNum,
 				totalPage));
 		if(startIndex >= actList.size()) {
-			toSender.output(ChatColor.GRAY.toString() + "No data.");
+			toSender.output(ChatColor.GRAY + "No data.");
 		} else {
 			for(int i = startIndex, e = Math.min(startIndex + this.pageSize, actList.size()); i < e; ++i) {
 				Entry<Location, Integer> entry = actList.get(i);
 				Location l = entry.getKey();
 				toSender.output(String.format(
-								ChatColor.YELLOW.toString() + "%d" + ChatColor.WHITE
+								ChatColor.YELLOW + "%d" + ChatColor.WHITE
 								+ ". " +
 								ChatColor.GREEN + "(%d, %d, %d) %s " +
 								ChatColor.DARK_GREEN + "%d",

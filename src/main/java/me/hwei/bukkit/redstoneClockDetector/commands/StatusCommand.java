@@ -8,7 +8,6 @@ import me.hwei.bukkit.redstoneClockDetector.RCDPlugin;
 import me.hwei.bukkit.redstoneClockDetector.util.AbstractCommand;
 import me.hwei.bukkit.redstoneClockDetector.util.IOutput;
 import me.hwei.bukkit.redstoneClockDetector.util.OutputManager;
-import me.hwei.bukkit.redstoneClockDetector.util.UsageException;
 
 public class StatusCommand extends AbstractCommand {
 
@@ -29,14 +28,13 @@ public class StatusCommand extends AbstractCommand {
 	protected String pluginInfo;
 
 	@Override
-	protected boolean execute(CommandSender sender, MatchResult[] data)
-			throws UsageException {
+	protected boolean execute(CommandSender sender, MatchResult[] data) {
 		IOutput toSender = OutputManager.GetInstance().toSender(sender);
 		OutputManager.GetInstance().prefix(toSender).output(this.pluginInfo);
 		CommandSender user = this.plugin.getUser();
 		if(user != null) {
 			toSender.output(String.format(
-					ChatColor.GREEN.toString() + "%s " + ChatColor.WHITE +
+					ChatColor.GREEN + "%s " + ChatColor.WHITE +
 					"has started a scan, remaining " +
 					ChatColor.YELLOW + "%d " + ChatColor.WHITE + 
 					"seconds to finish.",

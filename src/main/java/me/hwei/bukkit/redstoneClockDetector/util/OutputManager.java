@@ -3,6 +3,7 @@ package me.hwei.bukkit.redstoneClockDetector.util;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("unused")
 public class OutputManager {
 	protected static OutputManager instance = null;
 	public static OutputManager GetInstance() {
@@ -47,10 +48,10 @@ public class OutputManager {
 		return new OutputCombo(outputs);
 	}
 	public interface IPlayerGetter {
-		public Player get(String name);
+		Player get(String name);
 	}
 	
-	protected class OutputToSender implements IOutput {
+	protected static class OutputToSender implements IOutput {
 		public OutputToSender(CommandSender sender) {
 			this.sender = sender;
 		}
@@ -79,7 +80,7 @@ public class OutputManager {
 			this.output.output(prefixedMessage);
 		}
 	}
-	protected class OutputCombo implements IOutput {
+	protected static class OutputCombo implements IOutput {
 		public OutputCombo(IOutput[] outputs) {
 			this.outputs = outputs;
 		}
