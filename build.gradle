@@ -19,7 +19,7 @@ dependencies {
 }
 
 group = 'uk.co.notnull'
-version = '0.3'
+version = '0.4-SNAPSHOT'
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
